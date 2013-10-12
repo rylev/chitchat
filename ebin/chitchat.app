@@ -1,0 +1,13 @@
+{application,chitchat,
+             [{registered,[]},
+              {description,"chitchat"},
+              {vsn,"0.0.1"},
+              {modules,['Elixir.AssetManager','Elixir.ChatChat.RoomHandler',
+                        'Elixir.ChitChat.AssetsHandler',
+                        'Elixir.ChitChat.ChatHandler',
+                        'Elixir.ChitChat.HealthCheckHandler',
+                        'Elixir.ChitChat.RoomHandler',
+                        'Elixir.ChitChat.Supervisor','Elixir.ChitChat',
+                        'Elixir.ClientId','Elixir.Logger','Elixir.PubSub']},
+              {applications,[kernel,stdlib,elixir,cowboy]},
+              {mod,{'Elixir.ChitChat',[]}}]}.
