@@ -1,11 +1,13 @@
 ebin/Elixir.AssetManager.beam	Elixir.AssetManager	lib/asset_manager.ex
 ebin/Elixir.ChatChat.RoomHandler.beam	Elixir.ChatChat.RoomHandler	lib/room_handler.ex	Elixir.Logger
 ebin/Elixir.ChitChat.AssetsHandler.beam	Elixir.ChitChat.AssetsHandler	lib/assets_handler.ex	Elixir.AssetManager
-ebin/Elixir.ChitChat.ChatHandler.beam	Elixir.ChitChat.ChatHandler	lib/chat_handler.ex	Elixir.Logger	Elixir.PubSub
+ebin/Elixir.ChitChat.ChatHandler.beam	Elixir.ChitChat.ChatHandler	lib/chat_handler.ex	Elixir.Logger	Elixir.MessageProcessor	Elixir.PubSub
 ebin/Elixir.ChitChat.HealthCheckHandler.beam	Elixir.ChitChat.HealthCheckHandler	lib/health_check_handler.ex
 ebin/Elixir.ChitChat.RoomHandler.beam	Elixir.ChitChat.RoomHandler	lib/room_handler.ex	Elixir.AssetManager	Elixir.Logger
 ebin/Elixir.ChitChat.Supervisor.beam	Elixir.ChitChat.Supervisor	lib/supervisor.ex
 ebin/Elixir.ChitChat.beam	Elixir.ChitChat	lib/chitchat.ex	Elixir.ChitChat.AssetsHandler	Elixir.ChitChat.ChatHandler	Elixir.ChitChat.HealthCheckHandler	Elixir.ChitChat.RoomHandler	Elixir.ChitChat.Supervisor	Elixir.PubSub
 ebin/Elixir.ClientId.beam	Elixir.ClientId	lib/client_id.ex
 ebin/Elixir.Logger.beam	Elixir.Logger	lib/logger.ex
+ebin/Elixir.MessageProcessor.beam	Elixir.MessageProcessor	lib/message_processor.ex	Elixir.PubSub
+ebin/Elixir.PubSub.Message.beam	Elixir.PubSub.Message	lib/pub_sub.ex
 ebin/Elixir.PubSub.beam	Elixir.PubSub	lib/pub_sub.ex	Elixir.Logger

@@ -1,8 +1,10 @@
 var ws = new Object;
+var user = new Object;
+user.name = "Bob"
 
 function send(message)
 {
-    ws.send(message);
+    ws.send(JSON.stringify({ info: { message: "message" , data: { user_name: user.name, chat_message: message}}}));
     console.log('Message sent');
 }
 
@@ -13,11 +15,10 @@ function open()
         return;
     }
     ws = new WebSocket("ws://localhost:8080/chat");
-    console.log(ws);
     ws.onopen = function() { console.log('Connected'); };
     ws.onmessage = function (evt)
     {
-      appendMessage(evt);
+      processMessage(evt);
     };
     ws.onclose = function()
     {
@@ -25,13 +26,32 @@ function open()
     };
 }
 
-function appendMessage(evt)
+function processMessage(evt)
 {
     var receivedMsg = evt.data;
-    var myDiv = document.createElement("div")
-    myDiv.innerHTML = "User: " + receivedMsg + "<br/>";
-
     console.log("Received: " + receivedMsg);
+
+    var jsonObj = JSON.parse(receivedMsg);
+    var keys = Object.keys(jsonObj)
+    if(jsonObj.info.message == "connected") {
+      processUserId(jsonObj);
+    } else if(jsonObj.info.message = "message"){
+      appendMessage(jsonObj.info.data);
+    } else {
+      console.log("Error! Receive unexpected message" + jsonObj);
+    }
+}
+
+function processUserId(responseObj) {
+  user["user_id"] = responseObj.info.data.user_id
+  ws.send(JSON.stringify({ info: { message: "connected", data: { user_id: user.id, user_name: user.name }}}))
+}
+
+function appendMessage(messageData)
+{
+    var myDiv = document.createElement("div")
+    myDiv.innerHTML = messageData.name + ": " + messageData.chat_message + "<br/>";
+
     $('#msgs').append(myDiv);
 }
 

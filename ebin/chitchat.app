@@ -8,6 +8,8 @@
                         'Elixir.ChitChat.HealthCheckHandler',
                         'Elixir.ChitChat.RoomHandler',
                         'Elixir.ChitChat.Supervisor','Elixir.ChitChat',
-                        'Elixir.ClientId','Elixir.Logger','Elixir.PubSub']},
+                        'Elixir.ClientId','Elixir.Logger',
+                        'Elixir.MessageProcessor','Elixir.PubSub.Message',
+                        'Elixir.PubSub']},
               {applications,[kernel,stdlib,elixir,cowboy]},
               {mod,{'Elixir.ChitChat',[]}}]}.

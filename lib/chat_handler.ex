@@ -11,13 +11,12 @@ defmodule ChitChat.ChatHandler do
   def websocket_init(_transport, req, _opts) do
     Logger.log "Initializing websocket connection"
 
-    PubSub.subscribe(self)
-    PubSub.publish([ info: ], self)
+    publish_connection
     { :ok, req, :undefined_state }
   end
 
   def websocket_handle({ :text, message }, req, state) do
-    PubSub.publish(message)
+    process_message(message)
     { :ok, req, :undefined_state }
   end
 
@@ -26,4 +25,13 @@ defmodule ChitChat.ChatHandler do
   end
 
   def websocket_terminate(_reason, _req, _state), do: :ok
+
+  def process_message(message) do
+    MessageProcessor.process message
+  end
+
+  def publish_connection do
+    message = [info: [message: "connected", data: [user_id: "123"]]]
+    PubSub.publish(message, self)
+  end
 end

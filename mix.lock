@@ -1,4 +1,5 @@
 [ "cowboy": {:git, "git://github.com/extend/cowboy.git", "2b2829f5855e4b2a6ba5e0ca5ccefd42fa2e9524", []},
   "cowlib": {:git, "git://github.com/extend/cowlib.git", "2f35af5b0a67f591dde5ae4305a9587988a37c0c", [{:ref, "0.1.0"}]},
   "gproc": {:git, "git://github.com/uwiger/gproc.git", "7bb96517d60f3bbe6eacac9fb0e7150f12be2ae4", []},
+  "json": {:git, "git://github.com/cblage/elixir-json.git", "9bac6d4767170bc71b91b8548d8dc8eb19fa938a", []},
   "ranch": {:git, "git://github.com/extend/ranch.git", "41705752ffc7e3ecb96eef8374015ead4ca7f699", [{:ref, "0.8.5"}]} ]

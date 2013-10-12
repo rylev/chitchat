@@ -20,7 +20,8 @@ defmodule Chitchat.Mixfile do
   # { :foobar, "~> 0.1", git: "https://github.com/elixir-lang/foobar.git" }
   defp deps do
     [
-      { :cowboy, github: "extend/cowboy" }
+      { :cowboy, github: "extend/cowboy" },
+      { :json,   github: "cblage/elixir-json"}
     ]
   end
 end
