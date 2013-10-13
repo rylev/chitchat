@@ -1,8 +1,3 @@
-# {
-#   "type" : "chat_message"
-#   "message_text" : "This is a chat message"
-#   "user_id" : "123"
-# }
 defmodule JSONProcessor do
   def process(json) do
      decode(json) |> do_process
@@ -15,7 +10,7 @@ defmodule JSONProcessor do
         Users.register_new_user
       "reconnect" ->
         Logger.log("Handling reconnect")
-        Users.reconnect_user(json["user_id"])
+        json["user_id"] |> Users.find_by_id  |> Users.reconnect_user
       "new_name" ->
         Logger.log("Handling new name")
         user = json["user_id"] |> Users.find_by_id
@@ -23,8 +18,8 @@ defmodule JSONProcessor do
       "enter_room" ->
         Logger.log("Handling entering room")
         user = json["user_id"] |> Users.find_by_id
-        [type: "new_user", user_name: user.name] |> PubSub.publish
         Users.subscribe(user)
+        [type: "new_user", user_name: user.name] |> PubSub.publish
       "chat_message" ->
         Logger.log("Handling chat message")
         chat_message = json["message_text"]

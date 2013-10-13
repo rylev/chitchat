@@ -49,8 +49,10 @@ function processMessage(evt)
         appendMessage(jsonObj);
     } else if(jsonObj.type == "name"){
 
-      console.log(jsonObj);
         user.name = jsonObj.user_name;
+    } else if(jsonObj.type == "new_user"){
+
+        appendAdminMessage(jsonObj);
     } else {
 
         console.log("Error! Receive unexpected message" + jsonObj);
@@ -66,6 +68,13 @@ function appendMessage(messageData)
 {
     var myDiv = document.createElement("div")
     myDiv.innerHTML = messageData.name + ": " + messageData.message_text + "<br/>";
+
+    $('#msgs').append(myDiv);
+}
+function appendAdminMessage(messageData)
+{
+    var myDiv = document.createElement("div")
+    myDiv.innerHTML = "Admin: " + messageData.user_name + " has joined the room.<br/>";
 
     $('#msgs').append(myDiv);
 }

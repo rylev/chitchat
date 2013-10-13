@@ -23,8 +23,7 @@ defmodule Users do
     PubSub.publish(connected_message, new_user.pid)
   end
 
-  def reconnect_user(user_id) do
-    user = find_by_id(user_id)
+  def reconnect_user(user) do
     subscribe(user)
     PubSub.publish([type: "name", user_name: user.name], self)
   end
