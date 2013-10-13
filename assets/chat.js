@@ -15,7 +15,16 @@ function open()
         return;
     }
     ws = new WebSocket("ws://localhost:8080/chat");
-    ws.onopen = function() { console.log('Connected'); };
+    ws.onopen = function() {
+      if(userIdExists()) {
+
+          ws.send(JSON.stringify({type: "reconnect", user_id: user.id}));
+      } else {
+
+          ws.send(JSON.stringify({type: "new_connection"}));
+      }
+      console.log('Connected');
+    };
     ws.onmessage = function (evt)
     {
         processMessage(evt);
@@ -38,6 +47,10 @@ function processMessage(evt)
     } else if(jsonObj.type == "message"){
 
         appendMessage(jsonObj);
+    } else if(jsonObj.type == "name"){
+
+      console.log(jsonObj);
+        user.name = jsonObj.user_name;
     } else {
 
         console.log("Error! Receive unexpected message" + jsonObj);
@@ -47,8 +60,6 @@ function processMessage(evt)
 function processUserId(jsonObj)
 {
     user.id = jsonObj.user_id
-    jsonString = JSON.stringify({ type: "connected", user_id: user.id, user_name: user.name })
-    ws.send(jsonString)
 }
 
 function appendMessage(messageData)
@@ -64,7 +75,9 @@ function registerEvents()
     $('#set-name').click(function(evt){
         var name = $('#name').val();
         user.name = name;
-        open();
+        $.cookie('user_id', user.id);
+        ws.send(JSON.stringify({ type: "new_name", user_name: name, user_id: user.id }));
+        ws.send(JSON.stringify({ type: "enter_room", user_id: user.id }));
         $('#name-setting').hide();
         $('#chat').show();
     });
@@ -75,8 +88,31 @@ function registerEvents()
     });
 }
 
+function userIdExists()
+{
+    if($.cookie('user_id')){
+
+        return true;
+    } else {
+
+        return false;
+    }
+
+}
+
 $( document ).ready(function() {
 
-    $('#chat').hide();
+    open();
+
+    if(userIdExists()) {
+
+        $('#name-setting').hide();
+        var user_id = $.cookie('user_id');
+        user.id = user_id;
+    } else {
+
+        $('#chat').hide();
+    }
     registerEvents();
+
 });

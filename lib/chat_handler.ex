@@ -11,13 +11,12 @@ defmodule ChitChat.ChatHandler do
   def websocket_init(_transport, req, _opts) do
     Logger.log "Initializing websocket connection"
 
-    Users.register_new_user
-    { :ok, req, :undefined_state }
+    { :ok, req, nil }
   end
 
   def websocket_handle({ :text, message }, req, state) do
     process_message(message)
-    { :ok, req, :undefined_state }
+    { :ok, req, state }
   end
 
   def websocket_info({ :message, message }, req, state) do

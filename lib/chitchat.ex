@@ -5,6 +5,7 @@ defmodule ChitChat do
     {:ok, _} = :cowboy.start_http(:http, 100,
                                   [port: 8080],
                                   [env: [dispatch: router]])
+    Users.init
     PubSub.init
     ChitChat.Supervisor.start_link
   end

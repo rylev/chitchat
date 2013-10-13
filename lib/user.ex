@@ -3,11 +3,12 @@ defmodule Users do
   @id_length 15
 
   def init do
-    spawn_link(fn -> users_loop([]) end)
+    pid = spawn_link(fn -> users_loop([]) end)
+    :erlang.register(:users, pid)
   end
 
   def find_by_id(id) do
-    :users <- { :id, id }
+    :users <- { :id, id, self }
     receive do
       { :user, user  } -> user
     end
@@ -20,10 +21,14 @@ defmodule Users do
     PubSub.publish(connected_message, user.pid)
   end
 
-  def subscribe(id) do
-    user = find_by_id(id)
-    user = user.pid(self)
-    update_user(user)
+  def reconnect_user(user_id) do
+    user = find_by_id(user_id)
+    subscribe(user)
+    PubSub.publish([type: "name", user_name: user.name], self)
+  end
+
+  def subscribe(user) do
+    (user = user.pid(self)) |> update_user
     PubSub.subscribe(user)
   end
 
@@ -33,9 +38,9 @@ defmodule Users do
 
   defp users_loop(users) do
     receive do
-      { :id, id } ->
+      { :id, id, pid } ->
         user = Enum.find users, fn(user) ->  user.id == id end
-        user.pid <- { :user, user }
+        pid <- { :user, user }
         users_loop(users)
       { :new_user, user } ->
         users_loop([user|users])
