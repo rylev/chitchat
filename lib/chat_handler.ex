@@ -26,12 +26,12 @@ defmodule ChitChat.ChatHandler do
 
   def websocket_terminate(_reason, _req, _state), do: :ok
 
-  def process_message(message) do
-    MessageProcessor.process message
+  defp process_message(message) do
+    JSONProcessor.process message
   end
 
-  def publish_connection do
-    message = [info: [message: "connected", data: [user_id: "123"]]]
+  defp publish_connection do
+    message = [type: "connected", user_id: "123"]
     PubSub.publish(message, self)
   end
 end

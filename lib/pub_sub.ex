@@ -36,7 +36,7 @@ defmodule PubSub do
         send_message(pids, message)
         spawn_pub_sub_pool(users)
       { :add_user, user = {_pid, name } } ->
-        send_message(pids, json_for([info: [message: "new_user", data: [user_name: name]]]))
+        json_for([type: "new_user", user_name: name]) |> publish(pids)
         spawn_pub_sub_pool([user|users])
       { :show, pid } ->
         pid <- { :pids, pids }
