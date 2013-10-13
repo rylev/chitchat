@@ -1,2 +1,3 @@
+ebin/.compile.elixir
 ebin/*
 .DS_Store

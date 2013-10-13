@@ -11,8 +11,11 @@ defmodule JSONProcessor do
   defp do_process(json) do
     case json["type"] do
       "connected" ->
-        name = json["user_name"]
-        PubSub.subscribe({ self, name })
+        id = json["user_id"]
+        name = json["name"]
+        new_user_broadcast = [type: "new_user", name: name]
+        PubSub.publish(new_user_broadcast)
+        User.subscribe(id)
       "chat_message" ->
         chat_message = json["message_text"]
         name = json["user_name"]

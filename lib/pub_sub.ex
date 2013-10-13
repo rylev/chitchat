@@ -6,8 +6,8 @@ defmodule PubSub do
     :erlang.register(:pubsub, pid)
   end
 
-  def subscribe(user = { _new_pid, name}) do
-    Logger.log("Subscribing #{name}")
+  def subscribe(user) do
+    Logger.log("Subscribing #{user.name}")
     :pubsub <- { :add_user, user }
   end
 
@@ -30,13 +30,12 @@ defmodule PubSub do
   end
 
   defp spawn_pub_sub_pool(users) do
-    pids = ListDict.keys users
+    pids = Enum.map users, fn(u) -> u.pid end
     receive do
       { :pub, message } ->
         send_message(pids, message)
         spawn_pub_sub_pool(users)
-      { :add_user, user = {_pid, name } } ->
-        json_for([type: "new_user", user_name: name]) |> publish(pids)
+      { :add_user, user } ->
         spawn_pub_sub_pool([user|users])
       { :show, pid } ->
         pid <- { :pids, pids }

@@ -11,7 +11,7 @@ defmodule ChitChat.ChatHandler do
   def websocket_init(_transport, req, _opts) do
     Logger.log "Initializing websocket connection"
 
-    publish_connection
+    Users.register_new_user
     { :ok, req, :undefined_state }
   end
 
@@ -28,10 +28,5 @@ defmodule ChitChat.ChatHandler do
 
   defp process_message(message) do
     JSONProcessor.process message
-  end
-
-  defp publish_connection do
-    message = [type: "connected", user_id: "123"]
-    PubSub.publish(message, self)
   end
 end

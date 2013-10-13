@@ -18,7 +18,7 @@ function open()
     ws.onopen = function() { console.log('Connected'); };
     ws.onmessage = function (evt)
     {
-      processMessage(evt);
+        processMessage(evt);
     };
     ws.onclose = function()
     {
@@ -34,21 +34,21 @@ function processMessage(evt)
     var jsonObj = JSON.parse(receivedMsg);
     if(jsonObj.type == "connected") {
 
-      processUserId(jsonObj);
+        processUserId(jsonObj);
     } else if(jsonObj.type == "message"){
 
-      appendMessage(jsonObj);
+        appendMessage(jsonObj);
     } else {
 
-      console.log("Error! Receive unexpected message" + jsonObj);
+        console.log("Error! Receive unexpected message" + jsonObj);
     }
 }
 
 function processUserId(jsonObj)
 {
-  user.id = jsonObj.user_id
-  jsonString = JSON.stringify({ type: "connected", user_id: user.id, user_name: user.name })
-  ws.send(jsonString)
+    user.id = jsonObj.user_id
+    jsonString = JSON.stringify({ type: "connected", user_id: user.id, user_name: user.name })
+    ws.send(jsonString)
 }
 
 function appendMessage(messageData)
@@ -61,22 +61,22 @@ function appendMessage(messageData)
 
 function registerEvents()
 {
-  $('#set-name').click(function(evt){
-    var name = $('#name').val();
-    user.name = name;
-    open();
-    $('#name-setting').hide();
-    $('#chat').show();
-  });
+    $('#set-name').click(function(evt){
+        var name = $('#name').val();
+        user.name = name;
+        open();
+        $('#name-setting').hide();
+        $('#chat').show();
+    });
 
-  $('#send').click(function(evt){
-    var message = $('#message').val();
-    send(message);
-  });
+    $('#send').click(function(evt){
+        var message = $('#message').val();
+        send(message);
+    });
 }
 
 $( document ).ready(function() {
 
-  $('#chat').hide();
-  registerEvents();
+    $('#chat').hide();
+    registerEvents();
 });
