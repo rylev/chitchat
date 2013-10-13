@@ -1,5 +1,4 @@
 defmodule PubSub do
-  defrecord Message, message: nil, data: nil
   def init do
     Logger.log("Initializing the pub sub pool")
     pid = spawn_link(fn -> spawn_pub_sub_pool([]) end)
@@ -8,7 +7,11 @@ defmodule PubSub do
 
   def subscribe(user) do
     Logger.log("Subscribing #{user.name}")
-    :pubsub <- { :add_user, user }
+    :pubsub <- { :subscribe, user }
+  end
+  def unsubscribe(user) do
+    Logger.log("Unsubscribing old process #{inspect user.pid}")
+    :pubsub <- { :unsubscribe, user }
   end
 
   def publish(message) do
@@ -29,17 +32,19 @@ defmodule PubSub do
     end
   end
 
-  defp spawn_pub_sub_pool(users) do
-    pids = Enum.map users, fn(u) -> u.pid end
+  defp spawn_pub_sub_pool(pids) do
     receive do
       { :pub, message } ->
         send_message(pids, message)
-        spawn_pub_sub_pool(users)
-      { :add_user, user } ->
-        spawn_pub_sub_pool([user|users])
+        spawn_pub_sub_pool(pids)
+      { :subscribe, user } ->
+        spawn_pub_sub_pool([user.pid|pids])
+      { :unsubscribe, user } ->
+        new_pids = Enum.reject pids, fn(pid) -> user.pid == pid end
+        spawn_pub_sub_pool(new_pids)
       { :show, pid } ->
         pid <- { :pids, pids }
-        spawn_pub_sub_pool(users)
+        spawn_pub_sub_pool(pids)
       :die ->
         :ok
     end

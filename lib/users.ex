@@ -13,6 +13,12 @@ defmodule Users do
       { :user, user  } -> user
     end
   end
+  def find_by_pid(pid) do
+    :users <- { :pid, pid, self }
+    receive do
+      { :user, user  } -> user
+    end
+  end
 
   def register_new_user do
     user = User.new(pid: self, id: random_id)
@@ -38,6 +44,10 @@ defmodule Users do
 
   defp users_loop(users) do
     receive do
+      { :pid, pid, querier_pid } ->
+        user = Enum.find users, fn(user) ->  user.pid == pid end
+        querier_pid <- { :user, user }
+        users_loop(users)
       { :id, id, pid } ->
         user = Enum.find users, fn(user) ->  user.id == id end
         pid <- { :user, user }

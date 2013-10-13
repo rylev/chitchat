@@ -23,7 +23,12 @@ defmodule ChitChat.ChatHandler do
     { :reply, { :text, message }, req, state }
   end
 
-  def websocket_terminate(_reason, _req, _state), do: :ok
+  def websocket_terminate(reason, _req, _state) do
+    user = Users.find_by_pid(self)
+    TerminationHandler.handle(reason, user)
+    :ok
+  end
+
 
   defp process_message(message) do
     JSONProcessor.process message
