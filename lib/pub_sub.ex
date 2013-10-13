@@ -5,13 +5,13 @@ defmodule PubSub do
     :erlang.register(:pubsub, pid)
   end
 
-  def subscribe(user) do
-    Logger.log("Subscribing #{user.name}")
-    :pubsub <- { :subscribe, user }
+  def subscribe(pid) do
+    Logger.log("Subscribing #{inspect pid}")
+    :pubsub <- { :subscribe, pid }
   end
-  def unsubscribe(user) do
-    Logger.log("Unsubscribing old process #{inspect user.pid}")
-    :pubsub <- { :unsubscribe, user }
+  def unsubscribe(pid) do
+    Logger.log("Unsubscribing old process #{inspect pid}")
+    :pubsub <- { :unsubscribe, pid }
   end
 
   def publish(message) do
@@ -37,10 +37,10 @@ defmodule PubSub do
       { :pub, message } ->
         send_message(pids, message)
         spawn_pub_sub_pool(pids)
-      { :subscribe, user } ->
-        spawn_pub_sub_pool([user.pid|pids])
-      { :unsubscribe, user } ->
-        new_pids = Enum.reject pids, fn(pid) -> user.pid == pid end
+      { :subscribe, pid } ->
+        spawn_pub_sub_pool([pid|pids])
+      { :unsubscribe, pid } ->
+        new_pids = Enum.reject pids, &(&1 == pid)
         spawn_pub_sub_pool(new_pids)
       { :show, pid } ->
         pid <- { :pids, pids }

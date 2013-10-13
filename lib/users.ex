@@ -8,23 +8,19 @@ defmodule Users do
   end
 
   def find_by_id(id) do
-    :users <- { :id, id, self }
-    receive do
-      { :user, user  } -> user
-    end
+    find_by(:id, id)
   end
+
   def find_by_pid(pid) do
-    :users <- { :pid, pid, self }
-    receive do
-      { :user, user  } -> user
-    end
+    find_by(:pid, pid)
   end
 
   def register_new_user do
-    user = User.new(pid: self, id: random_id)
-    connected_message = [type: "connected", user_id: user.id ]
-    :users <- { :new_user, user }
-    PubSub.publish(connected_message, user.pid)
+    new_user = User.new(pid: self, id: random_id)
+    :users <- { :new_user, new_user }
+
+    connected_message = [type: "connected", user_id: new_user.id ]
+    PubSub.publish(connected_message, new_user.pid)
   end
 
   def reconnect_user(user_id) do
@@ -35,7 +31,7 @@ defmodule Users do
 
   def subscribe(user) do
     (user = user.pid(self)) |> update_user
-    PubSub.subscribe(user)
+    PubSub.subscribe(self)
   end
 
   def update_user(user) do
@@ -48,9 +44,9 @@ defmodule Users do
         user = Enum.find users, fn(user) ->  user.pid == pid end
         querier_pid <- { :user, user }
         users_loop(users)
-      { :id, id, pid } ->
+      { :id, id, querier_pid } ->
         user = Enum.find users, fn(user) ->  user.id == id end
-        pid <- { :user, user }
+        querier_pid <- { :user, user }
         users_loop(users)
       { :new_user, user } ->
         users_loop([user|users])
@@ -64,5 +60,12 @@ defmodule Users do
 
   defp random_id do
     @id_length |> :crypto.strong_rand_bytes |> :base64.encode
+  end
+
+  defp find_by(attr, value) do
+    :users <- { attr, value, self }
+    receive do
+      { :user, user  } -> user
+    end
   end
 end
